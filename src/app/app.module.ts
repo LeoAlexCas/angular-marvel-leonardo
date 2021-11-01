@@ -12,6 +12,8 @@ import { HeroProfileComponent } from './components/hero-profile/hero-profile.com
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ModalPollComponent } from './components/modal-poll/modal-poll.component';
 import { CapitalizePipe } from './directives/capitalize.pipe';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { marvelReducer } from './store/marvel.reducer';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { CapitalizePipe } from './directives/capitalize.pipe';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    StoreModule.forRoot({heroe: marvelReducer}),
+    StoreDevtoolsModule.instrument({ maxAge: 25 })
   ],
   providers: [HeroesService],
   bootstrap: [AppComponent]

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Heroe } from '../models/heroe';
+import { select, Store } from '@ngrx/store';
+import { saveHeroes } from '../store/marvel.actions';
 
 @Injectable()
 export class HeroesService {
@@ -22,7 +24,10 @@ export class HeroesService {
   
   public teams = new Map();
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private store: Store
+    ) { }
 
   resetPager() {
     this.page = 0;
@@ -57,8 +62,9 @@ export class HeroesService {
         this.getTeamColor(result.id);
 
         this.heroes.push(this.hero);
-        }
+        },
       );
+      this.store.dispatch(saveHeroes({heroe: this.heroes}));
     });
   }
 
