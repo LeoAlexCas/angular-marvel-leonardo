@@ -7,9 +7,11 @@ initialState = [];
 
 export const marvelReducer = createReducer(
     initialState,
-    on(saveHeroes, (heroe) => {
-        let actualHeroes: Heroe[] = heroe;
-        initialState = actualHeroes
-        return initialState;
-    })
+    on(saveHeroes, (state , { heroe }) => {
+        let heroes = {...state};
+        heroes = heroe;
+
+        return heroes;
+        }
+    )
 )

@@ -59,7 +59,7 @@ export class HeroesService {
         this.hero.modified = result.modified;
         this.hero.thumbnail = result.thumbnail;
         this.hero.resourceURI = result.resourceURI;
-        this.getTeamColor(result.id);
+        this.hero.teamColor = this.getTeamColor(result.id);
 
         this.heroes.push(this.hero);
         },
