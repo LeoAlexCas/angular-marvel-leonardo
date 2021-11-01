@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { Heroe } from '../models/heroe';
-import { saveHeroes, saveTeam } from './marvel.actions';
+import { getHeroes, saveHeroes, saveTeam } from './marvel.actions';
 
 export let initialState: Heroe[];
 initialState = [];
@@ -30,5 +30,9 @@ export const marvelReducer = createReducer(
         actuelHeroes[index] = heroe;
 
         return heroes;
-    })
+    }),
+    on(getHeroes, (state) => {
+        return [...state];
+    }),
+    
 )

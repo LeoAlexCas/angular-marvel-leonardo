@@ -6,7 +6,9 @@ import { Heroe } from '../../models/heroe';
 import { HeroesService } from '../../services/heroes.service';
 import { Location } from '@angular/common';
 import { ModalPollComponent } from '../modal-poll/modal-poll.component';
-import { saveTeam } from '../../store/marvel.actions';
+import { getHeroes, saveTeam } from '../../store/marvel.actions';
+import { heroList } from '../../store/marvel.selector';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-hero-profile',
@@ -19,6 +21,8 @@ export class HeroProfileComponent implements OnInit {
   public heroe: Heroe;
   public question_modal: string;
   public team:string = "";
+  public allheroes$:Observable<Heroe[]>
+  public heroListing: Heroe[];
 
 
   constructor(private route: ActivatedRoute,
@@ -29,6 +33,33 @@ export class HeroProfileComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.id = params.id;
+
+      this.allheroes$ = this.store.pipe(select(heroList));
+      this.allheroes$.subscribe((data) => {
+      this.heroListing = data;
+      console.log(this.heroListing)
+      });
+
+      for(let i = 0; i < this.heroListing.length; i++) {
+        if(this.heroListing[i].id == this.id) {
+          this.heroe = {
+            id: this.heroListing[i].id,
+            name : this.heroListing[i].name,
+            description : this.heroListing[i].description,
+            modified : this.heroListing[i].modified,
+            thumbnail : this.heroListing[i].thumbnail,
+            resourceURI : this.heroListing[i].resourceURI,
+            teamColor : this.heroesService.getTeamColor(this.heroListing[i].id)
+          }
+
+          console.log("Tiene equipo?");
+          console.log(this.heroe);
+          console.log(this.heroe.teamColor);
+          this.team = this.heroe.teamColor;
+        }
+      }
+      
+      /*
       this.heroesService.getHeroe(this.id).subscribe(data => {
         const temp = data.data.results[0];
         this.heroe = {
@@ -46,8 +77,9 @@ export class HeroProfileComponent implements OnInit {
         this.team = this.heroe.teamColor;
 
         
-      });
+      }); */
     });
+
   }
 
   goBack() {

@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HeroesService } from '../../services/heroes.service';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { Heroe } from '../../models/heroe';
+import { Observable } from 'rxjs';
+import { heroList } from '../../store/marvel.selector';
 
 @Component({
   selector: 'app-listado-de-heroes',
@@ -9,6 +12,9 @@ import { select, Store } from '@ngrx/store';
   styleUrls: ['./listado-de-heroes.component.css']
 })
 export class ListadoDeHeroesComponent implements OnInit {
+
+  public allheroes$:Observable<Heroe[]>
+  public heroListing: Heroe[];
 
   public title = 'Tutorial de Angular - Héroes de Marvel';
   public searchString;
@@ -40,6 +46,12 @@ export class ListadoDeHeroesComponent implements OnInit {
 
   ngOnInit() {
     this.heroesService.getHeroes();
+    this.allheroes$ = this.store.pipe(select(heroList));
+    this.allheroes$.subscribe((data) => {
+      this.heroListing = data;
+      console.log(this.heroListing)
+    })
+    
   }
 
 }
