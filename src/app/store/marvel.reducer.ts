@@ -15,12 +15,20 @@ export const marvelReducer = createReducer(
         }
     ),
     on(saveTeam, (state, { heroe }) => {
-        const stateModi: Heroe[] = {...state};
+        let heroes = {...state};
+        let actuelHeroes: Heroe[];
         let index;
 
-        let i = stateModi.find(e => e.id == heroe.id);
-        i?stateModi[index].teamColor = heroe.teamColor: '';
-        
-        return stateModi;
+        actuelHeroes = heroes;
+
+        //aca podria ir un for each
+        for(let i = 0; i < heroes.length; i++) {
+            if(heroes[i].id == heroe.id) {
+                index = i;
+            }
+        };
+        actuelHeroes[index] = heroe;
+
+        return heroes;
     })
 )

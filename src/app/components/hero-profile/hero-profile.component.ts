@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 
 import { Heroe } from '../../models/heroe';
 import { HeroesService } from '../../services/heroes.service';
 import { Location } from '@angular/common';
 import { ModalPollComponent } from '../modal-poll/modal-poll.component';
+import { saveTeam } from '../../store/marvel.actions';
 
 @Component({
   selector: 'app-hero-profile',
@@ -18,7 +20,11 @@ export class HeroProfileComponent implements OnInit {
   public question_modal: string;
   public team:string = "";
 
-  constructor(private route: ActivatedRoute, private heroesService: HeroesService, private _location: Location) { }
+
+  constructor(private route: ActivatedRoute,
+              private heroesService: HeroesService, 
+              private _location: Location,
+              private store: Store) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -35,11 +41,13 @@ export class HeroProfileComponent implements OnInit {
           teamColor : this.heroesService.getTeamColor(temp.id)
         } 
         console.log("Tiene equipo?");
+        console.log(this.heroe);
         console.log(this.heroe.teamColor);
         this.team = this.heroe.teamColor;
+
+        
       });
     });
-    
   }
 
   goBack() {
@@ -50,6 +58,7 @@ export class HeroProfileComponent implements OnInit {
     console.log("Color: "+team);
     this.team = team;
     this.heroesService.teams.set(this.heroe.id, this.team);
+    this.store.dispatch(saveTeam({ heroe: this.heroe }))
   }
 
   launchModal():void{

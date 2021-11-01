@@ -10,15 +10,3 @@ export const heroList = createSelector(
         return heroes;
     },
 );
-
-export const heroTeam = (heroId: string) => createSelector(
-    createFeatureSelector('heroTeam'),
-    (hero: Heroe[]) => {
-        let selected = hero.filter( arrHero => {
-            if(arrHero.id  == heroId) {
-                return arrHero.teamColor;
-            }
-        });
-        return selected;
-    }
-);

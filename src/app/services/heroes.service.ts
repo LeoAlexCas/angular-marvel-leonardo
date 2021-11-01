@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Heroe } from '../models/heroe';
 import { select, Store } from '@ngrx/store';
 import { saveHeroes } from '../store/marvel.actions';
+import { Observable, Subscription } from 'rxjs';
+
 
 @Injectable()
 export class HeroesService {
@@ -16,6 +18,7 @@ export class HeroesService {
   public total = 0;
 
   public hero: Heroe;
+  public teamColor$: Observable<Heroe>;
 
   public group_colors = {"azul" : "#1f8ff7",
                         "violeta":"#a43de3",
@@ -52,13 +55,15 @@ export class HeroesService {
           description: '',
           resourceURI: '',
           teamColor: ''
-        };  
+        }; 
+
         this.hero.id = result.id;
         this.hero.name = result.name;
         this.hero.description = result.description;
         this.hero.modified = result.modified;
         this.hero.thumbnail = result.thumbnail;
-        this.hero.resourceURI = result.resourceURI;
+        this.hero.resourceURI = result.resourceURI;    
+
         this.hero.teamColor = this.getTeamColor(result.id);
 
         this.heroes.push(this.hero);
