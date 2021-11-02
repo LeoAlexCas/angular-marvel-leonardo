@@ -56,6 +56,8 @@ export const getHeroes = createAction('Get Heroes');
 ```
 Se crean a traves del metodo createAction de @ngrx/store, el cual solicitara una denominacion para la accion, y opcionalmente un prop (debe ser importado tambien desde @ngrx/store), el cual sera entregado luego al Reducer.
 
+Notar que los props, seran demandados en el reducer y deben entregar el tipado correcto.
+
 ### Reducers
 Los Reducers o funciones reductoras, son las encargadas de manejar las transiciones de un estado al siguiente.
 
@@ -85,3 +87,43 @@ Esto para establecer el estado anterior y el estado al cual queremos cambiar.
 Como Nota, tener en consideracion que state es inmutable, asi que para manejarlo deberemos retornar un objeto que contenga copia del state y este haya sido modificado, no es factible acceder directamente al state para modificarlo.
 
 ### Selectors
+Los Selectores son funciones usadas para obtener el state y leerlo.
+
+```
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { Heroe } from "../models/heroe";
+
+export const heroes = (state) => state.heroe;
+
+export const heroList = createSelector(
+    createFeatureSelector('heroe'),
+    heroes,
+    ( heroes: Heroe[] ) => {
+        return heroes;
+    },
+);
+```
+createSelector, nos permite usar herolist como selector, que memorizara el estado. 
+
+### En Componentes y Servicios
+Una vez establecidos estos bloques, debemos, realizar algunos pasos:
+
+1. Debemos agregar el StoreModule a app.module.ts, agregarla a imports con el reducer o reducers que se vayan a utilizar:
+
+```
+ imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    StoreModule.forRoot({heroe: marvelReducer}),
+    StoreDevtoolsModule.instrument({ maxAge: 25 })
+  ],
+```
+
+2. Debemos importar las acciones y selectores que se vayan a utilizar en los diferentes componentes o servicios. Asi tambien debe ser importado el Store, para poder llamar los metodos que interactuan con las acciones y selectores.
+
+```
+import { select, Store } from '@ngrx/store';
+import { saveHeroes } from '../store/marvel.actions';
+```
