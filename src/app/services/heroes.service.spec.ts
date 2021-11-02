@@ -79,4 +79,17 @@ describe('HeroesService', () => {
   it('should be created', inject([HeroesService], (service: HeroesService) => {
     expect(service).toBeTruthy();
   }));
+
+  it('Deberia responder', inject([HeroesService], (service: HeroesService) => {
+    expect(service.getHeroes).toBeTruthy();
+  }));
+
+  it('should test getHeroes function', inject([HeroesService], (service: HeroesService) => {
+    spyOn(service, 'getHeroes').and.callThrough();
+    service.getHeroes;
+    expect(service.getHeroes).toHaveBeenCalled();
+    expect(service.heroes).toBeDefined();
+}));
+
+
 });

@@ -10,12 +10,15 @@ import { AppComponent } from '../../app.component';
 import { ModalPollComponent } from '../modal-poll/modal-poll.component';
 import { Observable } from 'rxjs-compat';
 import { of } from 'rxjs';
+import { Heroe } from '../../models/heroe';
 
 describe('HeroProfileComponent', () => {
   let component: HeroProfileComponent;
   let fixture: ComponentFixture<HeroProfileComponent>;
 
   let heroesService: HeroesService;
+  let gettingHero: Heroe
+
   const HEROE_OBJECT ={
     id:'1',
     name:'Spiderman',
@@ -95,6 +98,6 @@ describe('HeroProfileComponent', () => {
   it('Debería crear el heroe', () => {
     spyOn(heroesService, 'getHeroe').and.callThrough();
     component.ngOnInit();
-    expect(heroesService.getHeroe).toHaveBeenCalled();
+    expect(heroesService.getHeroe(1)).toHaveBeenCalled();
   });  
 });
