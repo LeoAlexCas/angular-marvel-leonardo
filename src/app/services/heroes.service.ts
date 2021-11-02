@@ -11,7 +11,7 @@ export class HeroesService {
 
   private protocol = 'https:';
   private ApiUrl = '//gateway.marvel.com:443/v1/public/';
-  public heroes: Array<Heroe> = [];
+  public heroes: Heroe[];
 
   public page = 0;
   public step = 20;
