@@ -1,67 +1,90 @@
 import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { HeroesService } from '../../services/heroes.service';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { StateObservable, ActionsSubject } from '@ngrx/store';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
 
 import { HeroProfileComponent } from './hero-profile.component';
-import { ModalPollComponent } from '../modal-poll/modal-poll.component';
+import {RouterTestingModule} from '@angular/router/testing';
+
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AppComponent } from '../../app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { ModalPollComponent } from '../modal-poll/modal-poll.component';
+import { Observable } from 'rxjs-compat';
+import { of } from 'rxjs';
 
 describe('HeroProfileComponent', () => {
   let component: HeroProfileComponent;
   let fixture: ComponentFixture<HeroProfileComponent>;
 
-  class HeroMock {
-    getHeroeMock() {
-      return [{
-        id: 1011176,
-        name: 'Ajak',
-        description: '',
-        resourceURI: 'http://gateway.marvel.com/v1/public/characters/1011176',
-        teamColor: '',
-        modified: '1969-12-31T19:00:00-0500',
-        thumbnail: {
-          path: 'http://i.annihil.us/u/prod/marvel/i/mg/2/80/4c002f35c5215',
-          extension: 'jpg'
-        }
-      }];
+  let heroesService: HeroesService;
+  const HEROE_OBJECT ={
+    id:'1',
+    name:'Spiderman',
+    description: 'El hombre que araña',
+    modified:new Date(1518417160),
+    thumbnail:
+      {
+        'path': 'https://i.pinimg.com/originals/c2/93/56/c293563aa553250601d8cb768c044d4b',
+        'extension': 'jpg'
+      },
+    resourceURI:'http://gateway.marvel.com/v1/public/characters/1011334',
+    teamColor:'yellow'};
+ 
+  class HeroServiceMock {
+    public teams = new Map().set("1","yellow");
+
+    public getHeroe(){
+      return Observable.of({data:{results:HEROE_OBJECT}}).delay(1000);
     }
-  }
+
+    public getTeamColor(){
+      return "yellow";
+      }
+    }
+
+    const storeMock = {
+      select() {
+        return of([{
+          id:'1',
+          name:'Spiderman',
+          description: 'El hombre que araña',
+          modified:new Date(1518417160),
+          thumbnail:
+            {
+              'path': 'https://i.pinimg.com/originals/c2/93/56/c293563aa553250601d8cb768c044d4b',
+              'extension': 'jpg'
+            },
+          resourceURI:'http://gateway.marvel.com/v1/public/characters/1011334',
+          teamColor:'yellow'}]);
+      }
+    };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeroProfileComponent, ModalPollComponent, AppComponent ],
-      imports: [
-        RouterTestingModule,
-        HttpClientModule,
-        HttpClientTestingModule
-      ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA,
         NO_ERRORS_SCHEMA
       ],
+      declarations: [
+        AppComponent,
+        ModalPollComponent,
+        HeroProfileComponent
+      ],
+      imports: [
+        RouterTestingModule,
+      ],
       providers: [
-        { provide: Store },
-        { provide: ActionsSubject },
-        { provide: StateObservable},
-        { provide: Observable }, 
-        { provide: HeroesService, useValue: {} },
         { provide: ComponentFixtureAutoDetect, useValue: true },
+        { provide: HeroesService, useClass: HeroServiceMock },
+        { provide: Store, useValue: storeMock }
       ]
     })
     .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async() => {
+    heroesService = TestBed.get(HeroesService);
     fixture = TestBed.createComponent(HeroProfileComponent);
     component = fixture.componentInstance;
-    component.ngOnInit();
     fixture.detectChanges();
   });
 
@@ -69,15 +92,9 @@ describe('HeroProfileComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /*
-  it('should get heroe', () => {
-    const fixture = TestBed.createComponent(HeroProfileComponent);
-    const actualComponent = fixture.componentInstance;
-    actualComponent.ngOnInit();
-    let hero = actualComponent.callHeroe(1011334);
-    expect(hero).toBeTruthy();
-  })
-  */
-
-
+  it('Debería crear el heroe', () => {
+    spyOn(heroesService, 'getHeroe').and.callThrough();
+    component.ngOnInit();
+    expect(heroesService.getHeroe).toHaveBeenCalled();
+  });  
 });

@@ -10,8 +10,13 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('phantomjs-prebuilt'),
+      require('karma-phantomjs-launcher'),
+      require('karma-chrome-launcher'),
+      require('karma-coverage'),
     ],
+    browsers: ['Chrome'],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
