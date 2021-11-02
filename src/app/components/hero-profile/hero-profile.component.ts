@@ -40,6 +40,7 @@ export class HeroProfileComponent implements OnInit {
       console.log(this.heroListing)
       });
 
+      /* Este sirve para traer los heroes directo del state
       for(let i = 0; i < this.heroListing.length; i++) {
         if(this.heroListing[i].id == this.id) {
           this.heroe = {
@@ -58,8 +59,8 @@ export class HeroProfileComponent implements OnInit {
           this.team = this.heroe.teamColor;
         }
       }
+      */
       
-      /*
       this.heroesService.getHeroe(this.id).subscribe(data => {
         const temp = data.data.results[0];
         this.heroe = {
@@ -77,7 +78,7 @@ export class HeroProfileComponent implements OnInit {
         this.team = this.heroe.teamColor;
 
         
-      }); */
+      }); 
     });
 
   }

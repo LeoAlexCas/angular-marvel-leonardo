@@ -127,3 +127,44 @@ Una vez establecidos estos bloques, debemos, realizar algunos pasos:
 import { select, Store } from '@ngrx/store';
 import { saveHeroes } from '../store/marvel.actions';
 ```
+
+3. Con eso listo, debemos utilizarlas para modificar o leer el state, por ejemplo al momento de traer el listado de heroes de la aplicacion actual, tambien lanzamos un dispatch que activa la accion y manda al reducer a reemplazar el estado:
+```
+ getHeroes (nameStartsWith?: string, page?: number) {
+    console.log("TEAMS");
+    console.log(Array.from(this.teams));
+    if (page || page === 0) {
+      this.page = page;
+    }
+    const url = this.protocol + this.ApiUrl + 'characters?apikey=56d2cc44b1c84eb7c6c9673565a9eb4b'
+    + '&offset=' + (this.page * this.step)
+    + (nameStartsWith ? ('&nameStartsWith=' + nameStartsWith) : '');
+    this.http.get<any>(url).subscribe((data) => {
+      this.heroes = [];
+      this.total = Math.ceil(data.data.total / this.step);
+      data.data.results.forEach( result => {
+        this.hero = {
+          id: '',
+          name: '',
+          description: '',
+          resourceURI: '',
+          teamColor: ''
+        }; 
+
+        this.hero.id = result.id;
+        this.hero.name = result.name;
+        this.hero.description = result.description;
+        this.hero.modified = result.modified;
+        this.hero.thumbnail = result.thumbnail;
+        this.hero.resourceURI = result.resourceURI;    
+
+        this.hero.teamColor = this.getTeamColor(result.id);
+
+        this.heroes.push(this.hero);
+        },
+      );
+      this.store.dispatch(saveHeroes({heroe: this.heroes}));
+    });
+  }
+```
+
