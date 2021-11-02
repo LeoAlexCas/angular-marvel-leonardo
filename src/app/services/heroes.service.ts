@@ -5,7 +5,6 @@ import { select, Store } from '@ngrx/store';
 import { saveHeroes } from '../store/marvel.actions';
 import { Observable, Subscription } from 'rxjs';
 
-
 @Injectable()
 export class HeroesService {
 
@@ -16,6 +15,8 @@ export class HeroesService {
   public page = 0;
   public step = 20;
   public total = 0;
+
+  public searchString = '';
 
   public hero: Heroe;
   public teamColor$: Observable<Heroe>;
@@ -34,6 +35,10 @@ export class HeroesService {
 
   resetPager() {
     this.page = 0;
+  }
+
+  setSearchString(search: string) {
+    this.searchString = search;
   }
 
   getHeroes(nameStartsWith?: string, page?: number) {

@@ -29,6 +29,7 @@ export class ListadoDeHeroesComponent implements OnInit {
 
   submitSearch() {
     this.heroesService.resetPager();
+    this.heroesService.setSearchString(this.searchString);
     this.heroesService.getHeroes(this.searchString);
   }
 
@@ -45,7 +46,7 @@ export class ListadoDeHeroesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.heroesService.getHeroes();
+    this.heroesService.getHeroes(this.heroesService.searchString);
     this.allheroes$ = this.store.pipe(select(heroList));
     this.allheroes$.subscribe((data) => {
       this.heroListing = data;
