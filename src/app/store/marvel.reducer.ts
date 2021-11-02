@@ -2,14 +2,17 @@ import { createReducer, on } from '@ngrx/store';
 import { Heroe } from '../models/heroe';
 import { getHeroes, saveHeroes, saveTeam } from './marvel.actions';
 
-export let initialState: Heroe[];
-initialState = [];
+export interface State {
+    heroe: Heroe[]
+}
+export let initialState: State;
+initialState.heroe = [];
 
 export const marvelReducer = createReducer(
     initialState,
     on(saveHeroes, (state , { heroe }) => {
         let heroes = {...state};
-        heroes = heroe;
+        heroes.heroe = heroe;
 
         return heroes;
         }
@@ -19,10 +22,10 @@ export const marvelReducer = createReducer(
         let actuelHeroes: Heroe[];
         let index;
 
-        actuelHeroes = heroes;
+        actuelHeroes = heroes.heroe;
 
         //aca podria ir un for each
-        for(let i = 0; i < heroes.length; i++) {
+        for(let i = 0; i < heroes.heroe.length; i++) {
             if(heroes[i].id == heroe.id) {
                 index = i;
             }
@@ -31,8 +34,6 @@ export const marvelReducer = createReducer(
 
         return heroes;
     }),
-    on(getHeroes, (state) => {
-        return [...state];
-    }),
+
     
 )
