@@ -1,4 +1,4 @@
-import { async, ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, ComponentFixtureAutoDetect, inject, TestBed } from '@angular/core/testing';
 import { HeroesService } from '../../services/heroes.service';
 import { Store } from '@ngrx/store';
 
@@ -17,7 +17,6 @@ describe('HeroProfileComponent', () => {
   let fixture: ComponentFixture<HeroProfileComponent>;
 
   let heroesService: HeroesService;
-  let gettingHero: Heroe
 
   const HEROE_OBJECT ={
     id:'1',
@@ -61,6 +60,10 @@ describe('HeroProfileComponent', () => {
       }
     };
 
+    class LocationMock {
+      back():void {}
+    }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [
@@ -78,7 +81,8 @@ describe('HeroProfileComponent', () => {
       providers: [
         { provide: ComponentFixtureAutoDetect, useValue: true },
         { provide: HeroesService, useClass: HeroServiceMock },
-        { provide: Store, useValue: storeMock }
+        { provide: Store, useValue: storeMock },
+        { provide: Location, useClass: LocationMock}
       ]
     })
     .compileComponents();
@@ -96,8 +100,10 @@ describe('HeroProfileComponent', () => {
   });
 
   it('Debería crear el heroe', () => {
-    spyOn(heroesService, 'getHeroe').and.callThrough();
+    const spy = spyOn(heroesService, 'getHeroe').and.callThrough();
     component.ngOnInit();
-    expect(heroesService.getHeroe(1)).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });  
+
+
 });

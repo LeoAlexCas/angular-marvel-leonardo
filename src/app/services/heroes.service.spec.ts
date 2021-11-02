@@ -44,7 +44,7 @@ describe('HeroesService', () => {
           id:'1',
           name:'Spiderman',
           description: 'El hombre que araña',
-          modified:new Date(1518417160),
+          modified: '',
           thumbnail:
             {
               'path': 'https://i.pinimg.com/originals/c2/93/56/c293563aa553250601d8cb768c044d4b',
@@ -80,16 +80,11 @@ describe('HeroesService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('Deberia responder', inject([HeroesService], (service: HeroesService) => {
-    expect(service.getHeroes).toBeTruthy();
-  }));
-
-  it('should test getHeroes function', inject([HeroesService], (service: HeroesService) => {
-    spyOn(service, 'getHeroes').and.callThrough();
-    service.getHeroes;
-    expect(service.getHeroes).toHaveBeenCalled();
-    expect(service.heroes).toBeDefined();
-}));
-
+  it('should test getHeroes function', () => {
+    heroesService.getHeroes = jasmine.createSpy('getHeroes').and.callThrough(); 
+    heroesService.getHeroes('', 1);
+    expect(heroesService.getHeroes).toHaveBeenCalled();
+    expect(heroesService.heroes).toBeDefined();
+  });
 
 });

@@ -99,7 +99,6 @@ export class HeroProfileComponent implements OnInit {
   }
 
   launchModal():void{
-    //this.question_modal="¿Dónde ubicarías a tu súper héroe?";
     this.question_modal="¿En cual grupo quieres colocar a tu súper héroe?";
     this.modal.toggle_modal();
   }

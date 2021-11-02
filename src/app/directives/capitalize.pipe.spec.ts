@@ -30,6 +30,6 @@ describe('CapitalizePipe', () => {
     //must use arrow function for expect to capture exception
     expect(()=>pipe.transform(undefined)).toThrow();
     expect(()=>pipe.transform()).toThrow();
-    expect(()=>pipe.transform()).toThrowError('No hay un string que transformar');
+    expect(()=>pipe.transform()).toThrowError('Requires a String as input');
   });
 });
