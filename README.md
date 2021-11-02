@@ -165,9 +165,9 @@ Junto con su importacion, en app.module.ts:
     StoreDevtoolsModule.instrument({ maxAge: 25 })
   ],
   ```
-  StoreDevtoolsModule.instrument(), tiene varias configuraciones. [Documentacion] (https://ngrx.io/guide/store-devtools/config).
+  StoreDevtoolsModule.instrument(), tiene varias configuraciones. [Documentacion](https://ngrx.io/guide/store-devtools/config).
 
-  Luego de esto, devemos instalar la extension [Redux DevTools] (https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=es) en Google Chrome. Esto permitira realizar monitoreo y manipulacion en tiempo real del state de la aplicacion mientras se ejecuta. 
+  Luego de esto, devemos instalar la extension [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=es) en Google Chrome. Esto permitira realizar monitoreo y manipulacion en tiempo real del state de la aplicacion mientras se ejecuta. 
   Para hacerlo se debera abrir Devtools en el browser donde este corriendo la aplicacion y buscar el tab Redux.
 
   
