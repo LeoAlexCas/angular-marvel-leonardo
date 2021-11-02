@@ -148,3 +148,26 @@ this.allheroes$ = this.store.pipe(select(heroList));
 ```
 <div  *ngFor="let heroe of heroList | async">
 ```
+
+### NgRX Store devtools
+Existe una herramienta de desarrollo, @ngrx/store-devtools, este consiste de 2 partes, la instalacion en el repo del proyecto:
+```
+npm install @ngrx/store-devtools --save
+```
+Junto con su importacion, en app.module.ts:
+```
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    StoreModule.forRoot({heroe: marvelReducer}),
+    StoreDevtoolsModule.instrument({ maxAge: 25 })
+  ],
+  ```
+  StoreDevtoolsModule.instrument(), tiene varias configuraciones. Documentacion[https://ngrx.io/guide/store-devtools/config].
+
+  Luego de esto, devemos instalar la extension Redux DevTools[https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=es] en Google Chrome. Esto permitira realizar monitoreo y manipulacion en tiempo real del state de la aplicacion mientras se ejecuta. 
+  Para hacerlo se debera abrir Devtools en el browser donde este corriendo la aplicacion y buscar el tab Redux.
+
+  
