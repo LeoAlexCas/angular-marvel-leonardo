@@ -171,3 +171,175 @@ Junto con su importacion, en app.module.ts:
   Para hacerlo se debera abrir Devtools en el browser donde este corriendo la aplicacion y buscar el tab Redux.
 
   
+### Testing
+En esta aplicacion ocuparemos Jasmine junto con Karma, que, si es que el proyecto se inicio desde el angular CLI, deberia venir integrado y con test pre establecidos.
+
+Para esto debemos configurar Karma. Si utilizamos el integrado, no sera necesario importar librerias ni modulos. Sin embargo si se desean hacer test con PhantomJs y puppeteer, se deberan instalar dichos modulos.
+
+Con esto podriamos incluso ya correr 
+
+```
+ng test
+```
+Esto correria los test, que en una aplicacion de angular sin trabajar, estaran todos pasados.
+
+Sin embargo cuando los componentes, servicios y clases se hacen mas complejos, es necesario dar ciertas configuraciones.
+
+1. Componentes:
+A los componentes se le deben importar todas las dependencias que sean necesarias para su funcionamiento, incluyendo otros componentes.
+Esto en el primer BeforeEach, que a traves de testBed, configura al igual que lo haria con cualquier modulo:
+```
+ beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ],
+      declarations: [
+        AppComponent,
+        ModalPollComponent,
+        HeroProfileComponent
+      ],
+      imports: [
+        RouterTestingModule,
+      ],
+      providers: [
+        { provide: ComponentFixtureAutoDetect, useValue: true },
+        { provide: HeroesService, useClass: HeroServiceMock },
+        { provide: Store, useValue: storeMock },
+        { provide: Location, useClass: LocationMock}
+      ]
+    })
+    .compileComponents();
+  }));
+```
+
+Esto y los demas elementos del test, van dentro de un "describe", una funcion que permite crear un grupo de specs, entregandole un nombre para la suite que vamos a armar y una funcion que implementa la suite.
+```
+describe('HeroProfileComponent', () => {
+  let component: HeroProfileComponent;
+  let fixture: ComponentFixture<HeroProfileComponent>;
+
+  let heroesService: HeroesService;
+
+```
+
+Dependiendo de los test deberemos ir implementando diferentes modulos, por ejemplo en nuestro caso de hero.
+Ejemplo de como se veria el BeforeEach de hero-profile.component.spec.ts:
+
+```
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ],
+      declarations: [
+        AppComponent,
+        ModalPollComponent,
+        HeroProfileComponent
+      ],
+      imports: [
+        RouterTestingModule,
+      ],
+      providers: [
+        { provide: ComponentFixtureAutoDetect, useValue: true },
+        { provide: HeroesService, useClass: HeroServiceMock },
+        { provide: Store, useValue: storeMock },
+        { provide: Location, useClass: LocationMock}
+      ]
+    })
+    .compileComponents();
+  }));
+  ```
+  Como Nota aca se traen SCHEMAS, se importa el router testingModule, y se traen providers para el uso en los distintos test. ComponentFixtureAutoDetect que crea un wrapper entre componente y template para poder realizar testing, HeroesService, para evaluar los metodos que deban usar el heroService. Location, para poder testear el metodo que devuelve pagina.
+
+  Luego de esto, en el segundo beforeEach, podemos establecer parametros, como el mixture que utilizaremos, y luego en el metodo it, deberemos especificar, el nombre del test y su funcionalidad:
+
+  ```
+   beforeEach(async() => {
+    heroesService = TestBed.get(HeroesService);
+    fixture = TestBed.createComponent(HeroProfileComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', async() => {
+    expect(component).toBeTruthy();
+  });
+
+  it('Debería crear el heroe', () => {
+    const spy = spyOn(heroesService, 'getHeroe').and.callThrough();
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });  
+  ```
+
+  Entonces it, recibe como parametros el nombre del test y una funcion que determinara que se testea,
+  por ejemplo, should create llama al mixture del componente actual y expera que sea truthy con toBeTruthy()
+  ```
+   it('should create', async() => {
+    expect(component).toBeTruthy();
+  });
+  ```
+
+  Estos test tambien pueden evaluar interacciones con otros componentes como si puede disparar un servicio:
+  ```
+  it('Debería crear el heroe', () => {
+    const spy = spyOn(heroesService, 'getHeroe').and.callThrough();
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });  
+```
+En estos casos tenemos spyOn que reemplaza un metodo y lo observa, pero delega su ejecucion, en este caso espiando al heroesService get Heroe, luego inicializamos el componente y experamos que este metodo haya sido llamado.
+
+2. Service:
+Si bien los servicios se implementan mas o menos igual en lo que es testing, al punto que podrias usar incluso la misma configuracion de un componente en el beforeEach, no tiene acceso a ngOnInit puesto que no es un componente. 
+Se da en los servicios que puede existir algun metodo que fije una variable, pero regrese void. En este caso es recomendable entonces, al hacer spy en dicho metodo, pero solicitar que se corrobore la variable:
+```
+it('should test getHeroes function', () => {
+    heroesService.getHeroes = jasmine.createSpy('getHeroes').and.callThrough(); 
+    heroesService.getHeroes('', 1);
+    expect(heroesService.getHeroes).toHaveBeenCalled();
+    expect(heroesService.heroes).toBeDefined();
+  });
+
+```
+
+3. Pipe:
+Los pipes deben ser corridos en los componentes relacionados al componente que lo usa. Es factible realizar test en las directivas para saber que se estan cumpliendo. En este caso particular, no existen demasiadas importaciones, si no mas bien casos de test con un string ingresado:
+
+```
+import { CapitalizePipe } from './capitalize.pipe';
+import { TestBed, inject, async } from '@angular/core/testing';
+
+describe('CapitalizePipe', () => {
+  let pipe;
+  
+  beforeEach(() => TestBed.configureTestingModule({
+    providers: [ CapitalizePipe ]
+  }));
+  
+  beforeEach(inject([CapitalizePipe], (p:CapitalizePipe) => {
+    pipe = p;
+  }));
+  
+  it('crea la instancia', () => {
+    expect(pipe).toBeTruthy();
+  });
+
+  it('debería funcionar con un string vacío', () => {
+    expect(pipe.transform('')).toEqual('');
+  });
+  
+  it('debería realizar la transformación de Capitalize', () => {
+    expect(pipe.transform('wow')).toEqual('WOW');
+  });
+  
+  it('debería lanzar error por valores inválidos', () => {
+    expect(()=>pipe.transform(undefined)).toThrow();
+    expect(()=>pipe.transform()).toThrow();
+    expect(()=>pipe.transform()).toThrowError('Requires a String as input');
+  });
+});
+```

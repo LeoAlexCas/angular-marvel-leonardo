@@ -4,7 +4,6 @@ import { TestBed, inject, async } from '@angular/core/testing';
 describe('CapitalizePipe', () => {
   let pipe;
   
-  //setup
   beforeEach(() => TestBed.configureTestingModule({
     providers: [ CapitalizePipe ]
   }));
@@ -13,7 +12,6 @@ describe('CapitalizePipe', () => {
     pipe = p;
   }));
   
-  //specs
   it('crea la instancia', () => {
     expect(pipe).toBeTruthy();
   });
@@ -27,7 +25,6 @@ describe('CapitalizePipe', () => {
   });
   
   it('debería lanzar error por valores inválidos', () => {
-    //must use arrow function for expect to capture exception
     expect(()=>pipe.transform(undefined)).toThrow();
     expect(()=>pipe.transform()).toThrow();
     expect(()=>pipe.transform()).toThrowError('Requires a String as input');
