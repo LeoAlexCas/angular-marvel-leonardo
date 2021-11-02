@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +33,7 @@ import { marvelReducer } from './store/marvel.reducer';
     StoreModule.forRoot({heroe: marvelReducer}),
     StoreDevtoolsModule.instrument({ maxAge: 25 })
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
   providers: [HeroesService],
   bootstrap: [AppComponent]
 })
