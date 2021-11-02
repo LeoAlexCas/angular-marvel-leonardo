@@ -130,41 +130,21 @@ import { saveHeroes } from '../store/marvel.actions';
 
 3. Con eso listo, debemos utilizarlas para modificar o leer el state, por ejemplo al momento de traer el listado de heroes de la aplicacion actual, tambien lanzamos un dispatch que activa la accion y manda al reducer a reemplazar el estado:
 ```
- getHeroes (nameStartsWith?: string, page?: number) {
-    console.log("TEAMS");
-    console.log(Array.from(this.teams));
-    if (page || page === 0) {
-      this.page = page;
-    }
-    const url = this.protocol + this.ApiUrl + 'characters?apikey=56d2cc44b1c84eb7c6c9673565a9eb4b'
-    + '&offset=' + (this.page * this.step)
-    + (nameStartsWith ? ('&nameStartsWith=' + nameStartsWith) : '');
-    this.http.get<any>(url).subscribe((data) => {
-      this.heroes = [];
-      this.total = Math.ceil(data.data.total / this.step);
-      data.data.results.forEach( result => {
-        this.hero = {
-          id: '',
-          name: '',
-          description: '',
-          resourceURI: '',
-          teamColor: ''
-        }; 
+this.store.dispatch(saveHeroes({heroe: this.heroes}));
 
-        this.hero.id = result.id;
-        this.hero.name = result.name;
-        this.hero.description = result.description;
-        this.hero.modified = result.modified;
-        this.hero.thumbnail = result.thumbnail;
-        this.hero.resourceURI = result.resourceURI;    
+```
+Esto guardara el array resultante como state ya que se va al reducer de SaveHeroes.
 
-        this.hero.teamColor = this.getTeamColor(result.id);
-
-        this.heroes.push(this.hero);
-        },
-      );
-      this.store.dispatch(saveHeroes({heroe: this.heroes}));
+Asi tambien, se puede utilizar un selector para traer datos del estado:
+```
+this.allheroes$ = this.store.pipe(select(heroList));
+      this.allheroes$.subscribe((data) => {
+      this.heroListing = data;
     });
-  }
 ```
 
+4. Si bien existe la opcion de guardar los datos del state dentro del mismo componente, tambien se pueden usar directo desde el selector que los trae, sin embargo al llevarlos al template deben ser llamados con el pipe async
+
+```
+<div  *ngFor="let heroe of heroList | async">
+```
