@@ -32,7 +32,9 @@ export class HeroProfileComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.id = params.id;
+    this.id = params.id;
+
+      /*Este era para llamar directo del store la lista
 
       this.allheroes$ = this.store.pipe(select(heroList));
       this.allheroes$.subscribe((data) => {
@@ -58,28 +60,30 @@ export class HeroProfileComponent implements OnInit {
           this.team = this.heroe.teamColor;
         }
       }
-      
-      /*
-      this.heroesService.getHeroe(this.id).subscribe(data => {
-        const temp = data.data.results[0];
-        this.heroe = {
-          id : temp.id,
-          name : temp.name,
-          description : temp.description,
-          modified : temp.modified,
-          thumbnail : temp.thumbnail,
-          resourceURI : temp.resourceURI,
-          teamColor : this.heroesService.getTeamColor(temp.id)
-        } 
-        console.log("Tiene equipo?");
-        console.log(this.heroe);
-        console.log(this.heroe.teamColor);
-        this.team = this.heroe.teamColor;
-
-        
-      }); */
+      */
+      this.callHeroe(this.id)
     });
 
+  }
+
+  callHeroe(id: number) {
+    this.heroesService.getHeroe(id).subscribe(data => {
+      const temp = data.data.results[0];
+      this.heroe = {
+        id : temp.id,
+        name : temp.name,
+        description : temp.description,
+        modified : temp.modified,
+        thumbnail : temp.thumbnail,
+        resourceURI : temp.resourceURI,
+        teamColor : this.heroesService.getTeamColor(temp.id)
+      } 
+      console.log("Tiene equipo?");
+      console.log(this.heroe);
+      console.log(this.heroe.teamColor);
+      this.team = this.heroe.teamColor;
+      return this.heroe;
+    }); 
   }
 
   goBack() {
