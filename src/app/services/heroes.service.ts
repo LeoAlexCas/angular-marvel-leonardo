@@ -4,12 +4,14 @@ import { Heroe } from '../models/heroe';
 import { select, Store } from '@ngrx/store';
 import { saveHeroes } from '../store/marvel.actions';
 import { Observable, Subscription } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class HeroesService {
 
-  private protocol = 'https:';
-  private ApiUrl = '//gateway.marvel.com:443/v1/public/';
+  private protocol = environment.API_PROTOCOL;
+  private ApiUrl = environment.API_BASE_URL;
+  private apiKey = environment.API_KEY;
   public heroes: Heroe[];
 
   public page = 0;
@@ -47,7 +49,7 @@ export class HeroesService {
     if (page || page === 0) {
       this.page = page;
     }
-    const url = this.protocol + this.ApiUrl + 'characters?apikey=56d2cc44b1c84eb7c6c9673565a9eb4b'
+    const url = this.protocol + this.ApiUrl + this.apiKey
     + '&offset=' + (this.page * this.step)
     + (nameStartsWith ? ('&nameStartsWith=' + nameStartsWith) : '');
     this.http.get<any>(url).subscribe((data) => {
