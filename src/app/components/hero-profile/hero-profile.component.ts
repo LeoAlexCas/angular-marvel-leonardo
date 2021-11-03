@@ -34,35 +34,7 @@ export class HeroProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
     this.id = params.id;
 
-      /*Este era para llamar directo del store la lista
-
-      this.allheroes$ = this.store.pipe(select(heroList));
-      this.allheroes$.subscribe((data) => {
-      this.heroListing = data;
-      console.log(this.heroListing)
-      });
-
-      /* Este sirve para traer los heroes directo del state
-      for(let i = 0; i < this.heroListing.length; i++) {
-        if(this.heroListing[i].id == this.id) {
-          this.heroe = {
-            id: this.heroListing[i].id,
-            name : this.heroListing[i].name,
-            description : this.heroListing[i].description,
-            modified : this.heroListing[i].modified,
-            thumbnail : this.heroListing[i].thumbnail,
-            resourceURI : this.heroListing[i].resourceURI,
-            teamColor : this.heroesService.getTeamColor(this.heroListing[i].id)
-          }
-
-          console.log("Tiene equipo?");
-          console.log(this.heroe);
-          console.log(this.heroe.teamColor);
-          this.team = this.heroe.teamColor;
-        }
-      }
-      */
-      this.callHeroe(this.id)
+    this.callHeroe(this.id)
     });
 
   }
